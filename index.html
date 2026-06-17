@@ -485,7 +485,7 @@
         });
 
         /* ========================================================
-           2. SIVA vs WARMIND ADVANCED ENGINE (DYNAMIC CIRCUITS EDITION)
+           2. SIVA vs WARMIND ADVANCED ENGINE (STABLE REVERSE-LOOP EDITION)
            ======================================================== */
         const canvas = document.getElementById('glitch-canvas');
         const ctx = canvas.getContext('2d');
@@ -515,7 +515,7 @@
         let warmindNodes = [];
         let gridDots = [];
         let techTextGlitches = [];
-        let warmindTraces = []; // Upgraded Circuit system
+        let warmindTraces = []; // Circuit system
         let scanlineY = 0;
         let scanlineDir = 1;
 
@@ -633,7 +633,7 @@
                     ctx.shadowBlur = 0;
                 }
 
-                // Delete long segments to free performance
+                // Delete long segments to free performance (using safe decrement loop index)
                 if (vine.points.length > vine.maxLength || newX < 0 || newX > 300 || newY < 0 || newY > 300) {
                     sivaVines.splice(index, 1);
                 }
@@ -664,7 +664,7 @@
         }
 
         function drawWarmindLayer(multiplier = 1) {
-            // RENDER SYSTEM SCAANER: Moving horizontal laser sweep
+            // RENDER SYSTEM SCREEN SCANNER: Moving horizontal laser sweep
             scanlineY += scanlineDir * 1.25;
             if (scanlineY > 300 || scanlineY < 0) scanlineDir *= -1;
             ctx.strokeStyle = 'rgba(240, 90, 40, 0.25)';
@@ -699,7 +699,7 @@
                 );
             }
 
-            // 1. HARD-LIGHT CIRCUITS (Mirroring SIVA vines but math-rigid)
+            // 1. HARD-LIGHT CIRCUITS
             const tracesTarget = 24 * multiplier;
             if (warmindTraces.length < tracesTarget && Math.random() < (0.22 * multiplier)) {
                 warmindTraces.push(spawnWarmindTrace());
@@ -750,7 +750,7 @@
                 }
             }
 
-            // 2. FLASH TEXT CODING SYSTEMS
+            // 2. FLASH TEXT CODING SYSTEMS (Corrected to robust decrement loop to prevent splicing crashes)
             if (Math.random() < (0.08 * multiplier)) {
                 const hexArr = ['0x2A4C', 'SYS_ERR', 'RSPTN_OK', 'SEC_HIJACK', 'DIR_0x9A', 'NNT_INTRU', 'FLARE_ACT'];
                 techTextGlitches.push({
@@ -761,7 +761,8 @@
                 });
             }
 
-            techTextGlitches.forEach((tGlitch, idx) => {
+            for (let idx = techTextGlitches.length - 1; idx >= 0; idx--) {
+                let tGlitch = techTextGlitches[idx];
                 tGlitch.alpha -= 0.04;
                 if (tGlitch.alpha <= 0) {
                     techTextGlitches.splice(idx, 1);
@@ -770,9 +771,42 @@
                     ctx.fillStyle = `rgba(240, 90, 40, ${tGlitch.alpha * 0.55})`;
                     ctx.fillText(tGlitch.text, tGlitch.x, tGlitch.y);
                 }
-            });
+            }
 
-            // 3. FLAME STORM FLARING EMBERS
+            // 3. SECURE NODE VECTORS (Corrected to robust decrement loop to prevent splicing crashes)
+            if (Math.random() < (0.08 * multiplier)) {
+                const startX = Math.random() * 220 + 40;
+                const startY = Math.random() * 220 + 40;
+                warmindNodes.push({
+                    startX: startX,
+                    startY: startY,
+                    endX: startX + (Math.random() > 0.5 ? 50 : -50),
+                    endY: startY + (Math.random() > 0.5 ? 50 : -50),
+                    alpha: 1.0
+                });
+            }
+
+            for (let index = warmindNodes.length - 1; index >= 0; index--) {
+                let node = warmindNodes[index];
+                node.alpha -= 0.025;
+                if (node.alpha <= 0) {
+                    warmindNodes.splice(index, 1);
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(node.startX, node.startY);
+                    ctx.lineTo(node.endX, node.endY);
+                    ctx.strokeStyle = `rgba(240, 90, 40, ${node.alpha * 0.45})`;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+
+                    // Endpoint tech boxes
+                    ctx.fillStyle = `rgba(240, 90, 40, ${node.alpha})`;
+                    ctx.fillRect(node.startX - 1.5, node.startY - 1.5, 3, 3);
+                    ctx.fillRect(node.endX - 1.5, node.endY - 1.5, 3, 3);
+                }
+            }
+
+            // 4. FLAME STORM FLARING EMBERS
             const embersTarget = 80 * multiplier;
             if (warmindEmbers.length < embersTarget && Math.random() < (0.45 * multiplier)) {
                 warmindEmbers.push(spawnWarmindEmber());
@@ -813,7 +847,7 @@
             isTransitionGlitching = true;
             transitionGlitchDuration = 0;
             
-            // Clean arrays completely to build fresh state
+            // Clean arrays completely to build fresh state safely
             sivaVines = [];
             warmindEmbers = [];
             warmindNodes = [];
