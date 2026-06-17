@@ -151,16 +151,19 @@
             clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
         }
 
+        /* Discord Button updated to match the Bungie style */
         .btn-discord {
-            background-color: #5865F2;
-            color: #ffffff;
-            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
+            background-color: transparent;
+            color: var(--text-main);
+            border: 2px solid var(--siva-red);
+            box-shadow: 0 0 10px var(--siva-glow);
         }
 
         .btn-discord:hover {
-            background-color: #4752c4;
+            background-color: var(--siva-red);
+            color: #000;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.5);
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.8);
         }
 
         .btn-clan {
