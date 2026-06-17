@@ -77,10 +77,10 @@
             position: relative;
         }
 
-        /* Animated SIVA Logo Placeholder */
+        /* Animated Custom Logo Container */
         .siva-logo-container {
-            width: 150px;
-            height: 150px;
+            width: 180px; /* Slightly larger size */
+            height: 180px; /* Slightly larger size */
             margin: 0 auto 20px;
             position: relative;
             display: flex;
@@ -91,6 +91,7 @@
         .siva-logo {
             width: 100%;
             height: 100%;
+            object-fit: contain;
             filter: drop-shadow(0 0 10px var(--siva-glow));
             animation: pulse-glow 4s infinite ease-in-out;
         }
@@ -353,21 +354,8 @@
         <!-- Header & Logo Section -->
         <header>
             <div class="siva-logo-container">
-                <!-- Custom SVG SIVA Diamond Node Logo -->
-                <svg class="siva-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Outer angular frame -->
-                    <polygon points="50,5 95,50 50,95 5,50" fill="none" stroke="#ff003c" stroke-width="2" />
-                    <!-- Inner Solid SIVA Diamond -->
-                    <polygon points="50,20 80,50 50,80 20,50" fill="#ff003c" opacity="0.15" />
-                    <polygon points="50,25 75,50 50,75 25,50" fill="none" stroke="#ff003c" stroke-width="3" />
-                    <!-- SIVA Core -->
-                    <polygon points="50,40 60,50 50,60 40,50" fill="#ff003c" />
-                    <!-- Connecting accent lines -->
-                    <line x1="50" y1="5" x2="50" y2="25" stroke="#ff003c" stroke-width="1.5" />
-                    <line x1="50" y1="75" x2="50" y2="95" stroke="#ff003c" stroke-width="1.5" />
-                    <line x1="5" y1="50" x2="25" y2="50" stroke="#ff003c" stroke-width="1.5" />
-                    <line x1="75" y1="50" x2="95" y2="50" stroke="#ff003c" stroke-width="1.5" />
-                </svg>
+                <!-- Custom PNG Logo replacing the SVG -->
+                <img class="siva-logo" src="https://raw.githubusercontent.com/xsmashx88x/GurzilClan/main/gurzilicon.png" alt="Gurzil Clan Icon">
             </div>
             <h1 class="clan-title">GURZIL</h1>
             <p class="clan-subtitle">Its About Friendships|Family, Not Numbers</p>
