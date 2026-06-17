@@ -102,8 +102,8 @@
         }
 
         .siva-logo {
-            width: 190px; /* Increased from 150px to fit the container better */
-            height: 190px; /* Increased from 150px to fit the container better */
+            width: 190px;
+            height: 190px;
             object-fit: contain;
             z-index: 2;
             position: relative;
@@ -157,7 +157,7 @@
             transition: color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, transform 0.2s ease;
         }
 
-        /* Discord & Clan Page Buttons (Standard Unified Style) */
+        /* Discord & Clan Page Buttons */
         .btn-discord, .btn-clan {
             background-color: transparent;
             color: var(--text-main);
@@ -485,11 +485,21 @@
         });
 
         /* ========================================================
-           2. SIVA vs WARMIND ADVANCED ENGINE (CRAZY EDITION)
+           2. SIVA vs WARMIND ADVANCED ENGINE (DYNAMIC IMAGES EDITION)
            ======================================================== */
         const canvas = document.getElementById('glitch-canvas');
         const ctx = canvas.getContext('2d');
         const logo = document.querySelector('.siva-logo');
+
+        // Target Image URLs
+        const sivaLogoURL = "https://raw.githubusercontent.com/xsmashx88x/GurzilClan/main/gurzilicon.png";
+        const warmindLogoURL = "https://raw.githubusercontent.com/xsmashx88x/GurzilClan/main/gurzilicon2.png";
+
+        // Preload Images to browser memory to eliminate transition pop
+        const preloadedSiva = new Image();
+        preloadedSiva.src = sivaLogoURL;
+        const preloadedWarmind = new Image();
+        preloadedWarmind.src = warmindLogoURL;
 
         // Dynamic State Variables
         let currentState = Math.random() > 0.5 ? 'SIVA' : 'WARMIND';
@@ -525,14 +535,16 @@
             updateGlobalStyle(currentState);
         }
 
-        // Swap visual accents across all document structures
+        // Swap visual accents and logo image sources across all document structures
         function updateGlobalStyle(state) {
             if (state === 'SIVA') {
                 document.documentElement.style.setProperty('--siva-red', '#ff003c');
                 document.documentElement.style.setProperty('--siva-glow', 'rgba(255, 0, 60, 0.6)');
+                logo.src = sivaLogoURL;
             } else {
                 document.documentElement.style.setProperty('--siva-red', '#f05a28');
                 document.documentElement.style.setProperty('--siva-glow', 'rgba(240, 90, 40, 0.6)');
+                logo.src = warmindLogoURL;
             }
         }
 
@@ -822,7 +834,7 @@
                     drawSivaLayer(1.5);
                 }
 
-                // Rapid styling flicker triggers during infection takeover
+                // Rapid styling and image resource flicker triggers during infection takeover
                 if (Math.random() < 0.3) {
                     updateGlobalStyle(Math.random() > 0.5 ? 'SIVA' : 'WARMIND');
                 }
@@ -839,7 +851,7 @@
             if (isTransitionGlitching) {
                 transitionGlitchDuration += dt;
 
-                // Alternate CSS styles rapidly to complete takeover
+                // Alternate CSS styles and logo sources rapidly to complete takeover
                 if (Math.random() < 0.5) {
                     updateGlobalStyle(Math.random() > 0.5 ? 'SIVA' : 'WARMIND');
                 }
@@ -850,7 +862,7 @@
                     transitionTimer = 0;
                     transitionLimit = Math.random() * 6000 + 7000; // Recalculate next cycle limits
 
-                    // Solidify updated state styling
+                    // Solidify updated state styling and logo image
                     updateGlobalStyle(currentState);
                 }
             }
