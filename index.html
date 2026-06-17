@@ -79,9 +79,9 @@
 
         /* Animated Custom Logo Container */
         .siva-logo-container {
-            width: 180px; /* Slightly larger size */
-            height: 180px; /* Slightly larger size */
-            margin: 0 auto 20px;
+            width: 180px; 
+            height: 180px; 
+            margin: 0 auto 30px; /* Added spacing to prevent overlap when scaling up */
             position: relative;
             display: flex;
             align-items: center;
@@ -92,18 +92,87 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 0 10px var(--siva-glow));
-            animation: pulse-glow 4s infinite ease-in-out;
+            animation: siva-warmind-hybrid 12s infinite ease-in-out;
         }
 
-        @keyframes pulse-glow {
-            0%, 100% {
-                transform: scale(1);
+        /* Hybrid SIVA / Warmind Glitch and Scale Loop */
+        @keyframes siva-warmind-hybrid {
+            /* =======================================================
+               SIVA PHASE (0% to 40%) - Organic rapid pulse, Red glows
+               ======================================================= */
+            0% {
+                transform: scale(0.95) rotate(0deg) skewX(0deg);
+                filter: drop-shadow(0 0 10px rgba(255, 0, 60, 0.7)) brightness(1);
+            }
+            15% {
+                transform: scale(1.15) rotate(-1deg) skewX(0deg);
+                filter: drop-shadow(0 0 25px rgba(255, 0, 60, 0.9)) brightness(1.25);
+            }
+            17% {
+                /* Sudden SIVA replication glitch spike */
+                transform: scale(1.22) translate(-5px, 2px) skewX(-12deg);
+                filter: drop-shadow(-6px 0 12px rgba(255, 0, 60, 0.9)) drop-shadow(6px 0 12px rgba(0, 191, 255, 0.4));
+            }
+            19% {
+                transform: scale(1.02) translate(0, 0) skewX(0deg);
+                filter: drop-shadow(0 0 15px rgba(255, 0, 60, 0.7));
+            }
+            35% {
+                transform: scale(0.88) rotate(1deg) skewX(0deg);
                 filter: drop-shadow(0 0 8px rgba(255, 0, 60, 0.5));
             }
+
+            /* =======================================================
+               NETWORK HIJACK TRANSITION (40% to 50%) - Strobe instability
+               ======================================================= */
+            43% {
+                transform: scale(1.25) translate(4px, -3px) rotate(-3deg) skewY(3deg);
+                filter: drop-shadow(-8px 0 15px rgba(240, 90, 40, 0.9)) drop-shadow(8px 0 15px rgba(255, 0, 60, 0.9)) brightness(1.6);
+            }
+            46% {
+                transform: scale(0.85) translate(-2px, 2px) rotate(0deg);
+                filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
+            }
+
+            /* =======================================================
+               WARMIND PHASE (50% to 90%) - Structured expansion, Amber glows
+               ======================================================= */
             50% {
-                transform: scale(1.03);
-                filter: drop-shadow(0 0 18px rgba(255, 0, 60, 0.8));
+                transform: scale(0.96) rotate(0deg) skewX(0deg);
+                filter: drop-shadow(0 0 12px rgba(240, 90, 40, 0.7)) brightness(1);
+            }
+            65% {
+                transform: scale(1.18) scaleX(1.03) rotate(0deg);
+                filter: drop-shadow(0 0 28px rgba(240, 90, 40, 0.9)) brightness(1.3);
+            }
+            68% {
+                /* Structured digital interference grid glitch */
+                transform: scale(1.08) translate(3px, -1px) skewY(3deg);
+                filter: drop-shadow(0 0 18px rgba(240, 90, 40, 0.85)) contrast(1.4);
+            }
+            70% {
+                transform: scale(0.90) rotate(-1deg) skewY(0deg);
+                filter: drop-shadow(0 0 10px rgba(240, 90, 40, 0.55));
+            }
+            85% {
+                transform: scale(1.14) rotate(1deg);
+                filter: drop-shadow(0 0 20px rgba(240, 90, 40, 0.8));
+            }
+
+            /* =======================================================
+               RE-INFECTION TRANSITION (90% to 100%) - Corruption returns
+               ======================================================= */
+            92% {
+                transform: scale(1.23) translate(-4px, 3px) skewX(10deg);
+                filter: drop-shadow(6px 0 15px rgba(255, 0, 60, 0.9)) drop-shadow(-6px 0 15px rgba(240, 90, 40, 0.8)) brightness(1.5);
+            }
+            96% {
+                transform: scale(0.86) rotate(0deg) skewX(0deg);
+                filter: drop-shadow(0 0 6px rgba(255, 0, 60, 0.45));
+            }
+            100% {
+                transform: scale(0.95) rotate(0deg) skewX(0deg);
+                filter: drop-shadow(0 0 10px rgba(255, 0, 60, 0.7)) brightness(1);
             }
         }
 
@@ -151,7 +220,7 @@
             clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
         }
 
-        /* Discord Button updated to match the Bungie style */
+        /* Discord Button styled exactly like the Bungie style */
         .btn-discord {
             background-color: transparent;
             color: var(--text-main);
@@ -357,7 +426,7 @@
         <!-- Header & Logo Section -->
         <header>
             <div class="siva-logo-container">
-                <!-- Custom PNG Logo replacing the SVG -->
+                <!-- Custom PNG Logo with Advanced SIVA/Warmind Hybrid Animation -->
                 <img class="siva-logo" src="https://raw.githubusercontent.com/xsmashx88x/GurzilClan/main/gurzilicon.png" alt="Gurzil Clan Icon">
             </div>
             <h1 class="clan-title">GURZIL</h1>
