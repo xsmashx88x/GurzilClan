@@ -572,14 +572,14 @@
         }
 
         function drawSivaLayer(multiplier = 1) {
-            // Adjust spawn frequency dynamically
-            const vinesTarget = 24 * multiplier;
+            // Adjust spawn frequency dynamically - limits reduced slightly as requested for stability
+            const vinesTarget = 16 * multiplier; 
             if (sivaVines.length < vinesTarget && Math.random() < (0.22 * multiplier)) {
                 sivaVines.push(spawnSivaVine());
             }
 
             // Draw Nanite Static Blocks
-            if (Math.random() < (0.15 * multiplier)) {
+            if (Math.random() < (0.12 * multiplier)) {
                 ctx.fillStyle = 'rgba(255, 0, 60, 0.5)';
                 const nSize = Math.random() * 6 + 2;
                 ctx.fillRect(
@@ -592,6 +592,13 @@
 
             for (let index = sivaVines.length - 1; index >= 0; index--) {
                 let vine = sivaVines[index];
+                
+                // Safety filter - handles unallocated reference blocks
+                if (!vine || !vine.points || vine.points.length === 0) {
+                    sivaVines.splice(index, 1);
+                    continue;
+                }
+
                 vine.life++;
 
                 // Organic structural growth curves
@@ -605,6 +612,13 @@
                 }
 
                 let lastPt = vine.points[vine.points.length - 1];
+                
+                // Fallback check if rendering coordinates become corrupted or NaN
+                if (!lastPt || isNaN(lastPt.x) || isNaN(lastPt.y)) {
+                    sivaVines.splice(index, 1);
+                    continue;
+                }
+
                 let newX = lastPt.x + vine.vx;
                 let newY = lastPt.y + vine.vy;
 
@@ -614,7 +628,10 @@
                 ctx.beginPath();
                 ctx.moveTo(vine.points[0].x, vine.points[0].y);
                 for (let i = 1; i < vine.points.length; i++) {
-                    ctx.lineTo(vine.points[i].x, vine.points[i].y);
+                    const pt = vine.points[i];
+                    if (pt && !isNaN(pt.x) && !isNaN(pt.y)) {
+                        ctx.lineTo(pt.x, pt.y);
+                    }
                 }
                 ctx.strokeStyle = vine.color;
                 ctx.lineWidth = vine.width;
@@ -656,7 +673,7 @@
                 }],
                 angleIndex: angleIndex,
                 speed: Math.random() * 1.5 + 1.2,
-                maxLength: Math.random() * 60 + 35,
+                maxLength: Math.random() * 50 + 30, // Slightly shortened as requested for lightweight execution
                 width: Math.random() * 1.4 + 0.8,
                 color: `rgba(240, 90, 40, ${Math.random() * 0.7 + 0.3})`,
                 life: 0
@@ -688,7 +705,7 @@
             });
 
             // Draw Computing Data fragments
-            if (Math.random() < (0.15 * multiplier)) {
+            if (Math.random() < (0.12 * multiplier)) {
                 ctx.fillStyle = 'rgba(240, 90, 40, 0.5)';
                 const nSize = Math.random() * 6 + 2;
                 ctx.fillRect(
@@ -699,24 +716,41 @@
                 );
             }
 
-            // 1. HARD-LIGHT CIRCUITS
-            const tracesTarget = 24 * multiplier;
+            // 1. HARD-LIGHT CIRCUITS (Target limits reduced slightly for smoother device execution)
+            const tracesTarget = 12 * multiplier; 
             if (warmindTraces.length < tracesTarget && Math.random() < (0.22 * multiplier)) {
                 warmindTraces.push(spawnWarmindTrace());
             }
 
             for (let index = warmindTraces.length - 1; index >= 0; index--) {
                 let trace = warmindTraces[index];
+                
+                // Safety filter - skips broken vectors
+                if (!trace || !trace.points || trace.points.length === 0) {
+                    warmindTraces.splice(index, 1);
+                    continue;
+                }
+
                 trace.life++;
 
                 let lastPt = trace.points[trace.points.length - 1];
                 const angles = [0, Math.PI/4, Math.PI/2, Math.PI*3/4, Math.PI, Math.PI*5/4, Math.PI*3/2, Math.PI*7/4];
+
+                // Safety fallback check for mathematical coordinate corruption
+                if (!lastPt || isNaN(lastPt.x) || isNaN(lastPt.y)) {
+                    warmindTraces.splice(index, 1);
+                    continue;
+                }
 
                 // Sharp mathematical turns at regular interval coordinates
                 if (trace.life % 14 === 0 && Math.random() < 0.45) {
                     const turnDir = Math.random() > 0.5 ? 1 : -1;
                     const turnSteps = Math.random() > 0.5 ? 1 : 2; // 45 deg or 90 deg steps
                     trace.angleIndex = (trace.angleIndex + turnDir * turnSteps + 8) % 8;
+                }
+
+                if (isNaN(trace.angleIndex) || trace.angleIndex === undefined) {
+                    trace.angleIndex = 0;
                 }
 
                 const currentAngle = angles[trace.angleIndex];
@@ -729,7 +763,10 @@
                 ctx.beginPath();
                 ctx.moveTo(trace.points[0].x, trace.points[0].y);
                 for (let i = 1; i < trace.points.length; i++) {
-                    ctx.lineTo(trace.points[i].x, trace.points[i].y);
+                    const pt = trace.points[i];
+                    if (pt && !isNaN(pt.x) && !isNaN(pt.y)) {
+                        ctx.lineTo(pt.x, pt.y);
+                    }
                 }
                 ctx.strokeStyle = trace.color;
                 ctx.lineWidth = trace.width;
@@ -750,8 +787,8 @@
                 }
             }
 
-            // 2. FLASH TEXT CODING SYSTEMS (Corrected to robust decrement loop to prevent splicing crashes)
-            if (Math.random() < (0.08 * multiplier)) {
+            // 2. FLASH TEXT CODING SYSTEMS
+            if (Math.random() < (0.06 * multiplier)) {
                 const hexArr = ['0x2A4C', 'SYS_ERR', 'RSPTN_OK', 'SEC_HIJACK', 'DIR_0x9A', 'NNT_INTRU', 'FLARE_ACT'];
                 techTextGlitches.push({
                     text: hexArr[Math.floor(Math.random() * hexArr.length)],
@@ -763,6 +800,13 @@
 
             for (let idx = techTextGlitches.length - 1; idx >= 0; idx--) {
                 let tGlitch = techTextGlitches[idx];
+                
+                // Safety filter - handles missing glitch reference blocks
+                if (!tGlitch || !tGlitch.text) {
+                    techTextGlitches.splice(idx, 1);
+                    continue;
+                }
+
                 tGlitch.alpha -= 0.04;
                 if (tGlitch.alpha <= 0) {
                     techTextGlitches.splice(idx, 1);
@@ -773,8 +817,8 @@
                 }
             }
 
-            // 3. SECURE NODE VECTORS (Corrected to robust decrement loop to prevent splicing crashes)
-            if (Math.random() < (0.08 * multiplier)) {
+            // 3. SECURE NODE VECTORS
+            if (Math.random() < (0.06 * multiplier)) {
                 const startX = Math.random() * 220 + 40;
                 const startY = Math.random() * 220 + 40;
                 warmindNodes.push({
@@ -788,6 +832,13 @@
 
             for (let index = warmindNodes.length - 1; index >= 0; index--) {
                 let node = warmindNodes[index];
+                
+                // Safety filter - skips unallocated vector paths
+                if (!node || isNaN(node.startX) || isNaN(node.startY)) {
+                    warmindNodes.splice(index, 1);
+                    continue;
+                }
+
                 node.alpha -= 0.025;
                 if (node.alpha <= 0) {
                     warmindNodes.splice(index, 1);
@@ -806,14 +857,34 @@
                 }
             }
 
-            // 4. FLAME STORM FLARING EMBERS
-            const embersTarget = 80 * multiplier;
+            // 4. FLAME STORM FLARING EMBERS (Max target reduced slightly from 80 to 45 for performance balancing)
+            const embersTarget = 45 * multiplier;
             if (warmindEmbers.length < embersTarget && Math.random() < (0.45 * multiplier)) {
-                warmindEmbers.push(spawnWarmindEmber());
+                // Generate safe variables
+                const emberX = Math.random() * 150 + 75;
+                const emberY = Math.random() * 30 + 175;
+                warmindEmbers.push({
+                    x: isNaN(emberX) ? 150 : emberX,
+                    y: isNaN(emberY) ? 180 : emberY,
+                    vx: (Math.random() - 0.5) * 0.8,
+                    vy: -Math.random() * 2.2 - 0.6,
+                    size: Math.random() * 3 + 1,
+                    alpha: 1.0,
+                    decay: Math.random() * 0.015 + 0.007,
+                    coreColor: 'rgba(255, 200, 50, ',
+                    haloColor: 'rgba(240, 90, 40, '
+                });
             }
 
             for (let i = warmindEmbers.length - 1; i >= 0; i--) {
                 let ember = warmindEmbers[i];
+                
+                // Safety filter
+                if (!ember || isNaN(ember.x) || isNaN(ember.y)) {
+                    warmindEmbers.splice(i, 1);
+                    continue;
+                }
+
                 ember.x += (150 - ember.x) * 0.012; // Draw inward slowly to keep flame cone centered
                 ember.x += ember.vx;
                 ember.y += ember.vy;
@@ -821,14 +892,14 @@
 
                 // Render orange outer halo glow
                 ctx.beginPath();
-                ctx.arc(ember.x, ember.y, ember.size * 1.5, 0, Math.PI * 2);
-                ctx.fillStyle = ember.haloColor + (ember.alpha * 0.3) + ')';
+                ctx.arc(ember.x, ember.y, Math.max(0.1, ember.size * 1.5), 0, Math.PI * 2);
+                ctx.fillStyle = ember.haloColor + Math.max(0, ember.alpha * 0.3) + ')';
                 ctx.fill();
 
                 // Render hot yellow inner core glow
                 ctx.beginPath();
-                ctx.arc(ember.x, ember.y, ember.size * 0.7, 0, Math.PI * 2);
-                ctx.fillStyle = ember.coreColor + ember.alpha + ')';
+                ctx.arc(ember.x, ember.y, Math.max(0.1, ember.size * 0.7), 0, Math.PI * 2);
+                ctx.fillStyle = ember.coreColor + Math.max(0, ember.alpha) + ')';
                 ctx.shadowBlur = 6;
                 ctx.shadowColor = 'rgba(255, 200, 50, 0.8)';
                 ctx.fill();
@@ -861,7 +932,9 @@
         let lastTimestamp = 0;
 
         function mainLoop(timestamp) {
-            const dt = timestamp - lastTimestamp;
+            // Prevent huge delta jumps when loading tab in background
+            let dt = timestamp - lastTimestamp;
+            if (dt > 100) dt = 16; 
             lastTimestamp = timestamp;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -912,31 +985,33 @@
                 }
             }
 
-            // Draw visual states based on phase
-            if (isInfectionPhase) {
-                // INFECTION STATE: Clashing SIVA vs Warmind particles rendered together
-                // Invader spawns heavily, defender scales back slightly to show progression of infection
-                if (currentState === 'SIVA') {
-                    // SIVA is active, but Warmind is aggressively invading and growing
-                    drawSivaLayer(0.7);
-                    drawWarmindLayer(1.5);
-                } else {
-                    // Warmind is active, but SIVA vines are spreading and taking over
-                    drawWarmindLayer(0.7);
-                    drawSivaLayer(1.5);
-                }
+            // Draw visual states based on phase (Safe wrapped layer processes)
+            try {
+                if (isInfectionPhase) {
+                    // INFECTION STATE: Clashing SIVA vs Warmind particles rendered together
+                    if (currentState === 'SIVA') {
+                        drawSivaLayer(0.7);
+                        drawWarmindLayer(1.5);
+                    } else {
+                        drawWarmindLayer(0.7);
+                        drawSivaLayer(1.5);
+                    }
 
-                // Rapid styling and image resource flicker triggers during infection takeover
-                if (Math.random() < 0.3) {
-                    updateGlobalStyle(Math.random() > 0.5 ? 'SIVA' : 'WARMIND');
-                }
-            } else {
-                // NORMAL STATE: Render standard background graphic layer
-                if (currentState === 'SIVA') {
-                    drawSivaLayer();
+                    // Rapid styling and image resource flicker triggers during infection takeover
+                    if (Math.random() < 0.3) {
+                        updateGlobalStyle(Math.random() > 0.5 ? 'SIVA' : 'WARMIND');
+                    }
                 } else {
-                    drawWarmindLayer();
+                    // NORMAL STATE: Render standard background graphic layer
+                    if (currentState === 'SIVA') {
+                        drawSivaLayer();
+                    } else {
+                        drawWarmindLayer();
+                    }
                 }
+            } catch (err) {
+                // Fail-safe to log canvas anomalies without halting core cycle
+                console.warn("Recovered from canvas render step variance:", err);
             }
 
             // Handling the total system transition freeze/glitch
