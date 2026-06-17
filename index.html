@@ -13,7 +13,6 @@
             --bg-primary: #0a0a0c;
             --bg-secondary: #121216;
             --bg-accent: #1e1e24;
-            /* These CSS variables are modified dynamically by JS to transition between Red (SIVA) and Orange (Warmind) */
             --siva-red: #ff003c;
             --siva-glow: rgba(255, 0, 60, 0.6);
             --text-main: #e2e2e5;
@@ -103,8 +102,8 @@
         }
 
         .siva-logo {
-            width: 150px;
-            height: 150px;
+            width: 190px; /* Increased from 150px to fit the container better */
+            height: 190px; /* Increased from 150px to fit the container better */
             object-fit: contain;
             z-index: 2;
             position: relative;
@@ -486,7 +485,7 @@
         });
 
         /* ========================================================
-           2. SIVA vs WARMIND ADVANCED ENGINE
+           2. SIVA vs WARMIND ADVANCED ENGINE (CRAZY EDITION)
            ======================================================== */
         const canvas = document.getElementById('glitch-canvas');
         const ctx = canvas.getContext('2d');
@@ -495,7 +494,8 @@
         // Dynamic State Variables
         let currentState = Math.random() > 0.5 ? 'SIVA' : 'WARMIND';
         let transitionTimer = 0;
-        let transitionLimit = Math.random() * 5000 + 5000; // Switch state every 5-10s
+        let transitionLimit = Math.random() * 5000 + 7000; // Switch state every 7-12s
+        const infectionWindow = 2500; // Infection takeover starts 2.5s before state ends
         let isTransitionGlitching = false;
         let transitionGlitchDuration = 0;
 
@@ -504,27 +504,28 @@
         let warmindEmbers = [];
         let warmindNodes = [];
         let gridDots = [];
+        let techTextGlitches = [];
 
-        // Initialize Screen Elements
+        // Initialize Canvas Engine
         function initEngine() {
             canvas.width = 300;
             canvas.height = 300;
 
-            // Generate coordinate points for Warmind visual overlays
-            for (let i = 0; i < 20; i++) {
+            // Generate structural coordinate dots for Warmind
+            for (let i = 0; i < 35; i++) {
                 gridDots.push({
                     x: Math.random() * 300,
                     y: Math.random() * 300,
-                    size: Math.random() * 1.5 + 1,
+                    size: Math.random() * 2 + 0.8,
                     alpha: Math.random() * 0.4 + 0.1
                 });
             }
 
-            // Sync original accent CSS states depending on loaded theme
+            // Sync structural CSS colors
             updateGlobalStyle(currentState);
         }
 
-        // Swapping UI styling values dynamically
+        // Swap visual accents across all document structures
         function updateGlobalStyle(state) {
             if (state === 'SIVA') {
                 document.documentElement.style.setProperty('--siva-red', '#ff003c');
@@ -536,44 +537,56 @@
         }
 
         /* --------------------------------------------------------
-           SIVA STATE: Winding organic lines (Vines) with node segments
+           SIVA LAYERS: Organic Red Vine tendrils and Nanite squares
            -------------------------------------------------------- */
         function spawnSivaVine() {
             const angle = Math.random() * Math.PI * 2;
-            const dist = Math.random() * 20 + 20; // Spawn near logo edge
+            const dist = Math.random() * 15 + 50; // Dynamic spawn origin offset to match larger logo
             return {
                 points: [{
                     x: 150 + Math.cos(angle) * dist,
                     y: 150 + Math.sin(angle) * dist
                 }],
-                vx: Math.cos(angle) * (Math.random() * 1.2 + 0.6),
-                vy: Math.sin(angle) * (Math.random() * 1.2 + 0.6),
-                maxLength: Math.random() * 60 + 30,
-                width: Math.random() * 1.2 + 0.6,
-                color: `rgba(255, 0, 60, ${Math.random() * 0.6 + 0.4})`,
+                vx: Math.cos(angle) * (Math.random() * 1.5 + 0.8),
+                vy: Math.sin(angle) * (Math.random() * 1.5 + 0.8),
+                maxLength: Math.random() * 70 + 40,
+                width: Math.random() * 1.6 + 0.6,
+                color: `rgba(255, 0, 60, ${Math.random() * 0.7 + 0.3})`,
                 life: 0
             };
         }
 
-        function drawSivaLayer() {
-            // Spawn new organic nanite strands randomly
-            if (sivaVines.length < 12 && Math.random() < 0.15) {
+        function drawSivaLayer(multiplier = 1) {
+            // Adjust spawn frequency dynamically
+            const vinesTarget = 24 * multiplier;
+            if (sivaVines.length < vinesTarget && Math.random() < (0.22 * multiplier)) {
                 sivaVines.push(spawnSivaVine());
+            }
+
+            // Draw Nanite Static Blocks
+            if (Math.random() < (0.15 * multiplier)) {
+                ctx.fillStyle = 'rgba(255, 0, 60, 0.5)';
+                const nSize = Math.random() * 6 + 2;
+                ctx.fillRect(
+                    150 + (Math.random() - 0.5) * 160 - nSize/2,
+                    150 + (Math.random() - 0.5) * 160 - nSize/2,
+                    nSize,
+                    nSize
+                );
             }
 
             for (let index = sivaVines.length - 1; index >= 0; index--) {
                 let vine = sivaVines[index];
                 vine.life++;
 
-                // Inject wavy organic curve variance (Math.sin/cos variation)
-                vine.vx += (Math.random() - 0.5) * 0.3 + Math.sin(vine.life * 0.1) * 0.08;
-                vine.vy += (Math.random() - 0.5) * 0.3 + Math.cos(vine.life * 0.1) * 0.08;
+                // Organic structural growth curves
+                vine.vx += (Math.random() - 0.5) * 0.4 + Math.sin(vine.life * 0.15) * 0.12;
+                vine.vy += (Math.random() - 0.5) * 0.4 + Math.cos(vine.life * 0.15) * 0.12;
 
-                // Restrict velocity boundaries to keep paths clean
                 const speed = Math.sqrt(vine.vx * vine.vx + vine.vy * vine.vy);
-                if (speed > 2) {
-                    vine.vx = (vine.vx / speed) * 1.8;
-                    vine.vy = (vine.vy / speed) * 1.8;
+                if (speed > 2.2) {
+                    vine.vx = (vine.vx / speed) * 2.2;
+                    vine.vy = (vine.vy / speed) * 2.2;
                 }
 
                 let lastPt = vine.points[vine.points.length - 1];
@@ -582,7 +595,7 @@
 
                 vine.points.push({ x: newX, y: newY });
 
-                // Render vine connections
+                // Draw vine segment
                 ctx.beginPath();
                 ctx.moveTo(vine.points[0].x, vine.points[0].y);
                 for (let i = 1; i < vine.points.length; i++) {
@@ -592,19 +605,20 @@
                 ctx.lineWidth = vine.width;
                 ctx.stroke();
 
-                // Draw structured diamond node seeds along active vine paths
-                if (vine.points.length % 12 === 0) {
+                // Draw structured diamond nodes along growth lines
+                if (vine.points.length % 10 === 0) {
                     ctx.save();
                     ctx.translate(newX, newY);
                     ctx.rotate(Math.PI / 4);
                     ctx.fillStyle = '#ff003c';
-                    ctx.shadowBlur = 6;
+                    ctx.shadowBlur = 8;
                     ctx.shadowColor = '#ff003c';
-                    ctx.fillRect(-2.5, -2.5, 5, 5);
+                    ctx.fillRect(-3, -3, 6, 6);
                     ctx.restore();
+                    ctx.shadowBlur = 0;
                 }
 
-                // Delete dead segments to prevent DOM leak
+                // Delete long segments to free performance
                 if (vine.points.length > vine.maxLength || newX < 0 || newX > 300 || newY < 0 || newY > 300) {
                     sivaVines.splice(index, 1);
                 }
@@ -612,101 +626,133 @@
         }
 
         /* --------------------------------------------------------
-           WARMIND STATE: Rising Fire/Ember vectors and grid dots
+           WARMIND LAYERS: Flaring orange embers & blinking hex codes
            -------------------------------------------------------- */
         function spawnWarmindEmber() {
             return {
-                x: Math.random() * 120 + 90, // Position directly underneath the logo core
-                y: Math.random() * 40 + 180, 
-                vx: (Math.random() - 0.5) * 0.7,
-                vy: -Math.random() * 1.6 - 0.4, // Floating upwards
-                size: Math.random() * 2.5 + 1,
-                alpha: 1,
-                decay: Math.random() * 0.012 + 0.006,
-                color: 'rgba(240, 90, 40, '
+                x: Math.random() * 150 + 75, // Matches the wider bounds of the larger logo
+                y: Math.random() * 30 + 175, 
+                vx: (Math.random() - 0.5) * 0.8,
+                vy: -Math.random() * 2.2 - 0.6, // Rapid upward flame motion
+                size: Math.random() * 3 + 1,
+                alpha: 1.0,
+                decay: Math.random() * 0.015 + 0.007,
+                coreColor: 'rgba(255, 200, 50, ', // Hot inner core
+                haloColor: 'rgba(240, 90, 40, '   // Outer flame envelope
             };
         }
 
-        function drawWarmindLayer() {
-            // Blit coordinate structural grid dots
+        function drawWarmindLayer(multiplier = 1) {
+            // Draw background structural dot coordinate patterns
             gridDots.forEach(dot => {
-                ctx.fillStyle = `rgba(240, 90, 40, ${dot.alpha * (Math.sin(Date.now() / 400) * 0.4 + 0.6)})`;
+                ctx.fillStyle = `rgba(240, 90, 40, ${dot.alpha * (Math.sin(Date.now() / 300) * 0.4 + 0.6)})`;
                 ctx.fillRect(dot.x, dot.y, dot.size, dot.size);
             });
 
-            // Occasional vector-dot connection lines
-            if (Math.random() < 0.04) {
-                const startX = Math.random() * 240 + 30;
-                const startY = Math.random() * 240 + 30;
+            // Flash tech code strings around the canvas grid
+            if (Math.random() < (0.08 * multiplier)) {
+                const hexArr = ['0x2A4C', 'SYS_ERR', 'RSPTN_OK', 'SEC_HIJACK', 'DIR_0x9A', 'NNT_INTRU', 'FLARE_ACT'];
+                techTextGlitches.push({
+                    text: hexArr[Math.floor(Math.random() * hexArr.length)],
+                    x: Math.random() * 200 + 50,
+                    y: Math.random() * 220 + 40,
+                    alpha: 1.0
+                });
+            }
+
+            techTextGlitches.forEach((tGlitch, idx) => {
+                tGlitch.alpha -= 0.04;
+                if (tGlitch.alpha <= 0) {
+                    techTextGlitches.splice(idx, 1);
+                } else {
+                    ctx.font = '7px Share Tech Mono';
+                    ctx.fillStyle = `rgba(240, 90, 40, ${tGlitch.alpha * 0.55})`;
+                    ctx.fillText(tGlitch.text, tGlitch.x, tGlitch.y);
+                }
+            });
+
+            // Random grid alignment vector nodes
+            if (Math.random() < (0.08 * multiplier)) {
+                const startX = Math.random() * 220 + 40;
+                const startY = Math.random() * 220 + 40;
                 warmindNodes.push({
                     startX: startX,
                     startY: startY,
-                    endX: startX + (Math.random() > 0.5 ? 40 : -40),
-                    endY: startY + 40,
-                    alpha: 1
+                    endX: startX + (Math.random() > 0.5 ? 50 : -50),
+                    endY: startY + (Math.random() > 0.5 ? 50 : -50),
+                    alpha: 1.0
                 });
             }
 
             warmindNodes.forEach((node, index) => {
-                node.alpha -= 0.02;
+                node.alpha -= 0.025;
                 if (node.alpha <= 0) {
                     warmindNodes.splice(index, 1);
                 } else {
                     ctx.beginPath();
                     ctx.moveTo(node.startX, node.startY);
                     ctx.lineTo(node.endX, node.endY);
-                    ctx.strokeStyle = `rgba(240, 90, 40, ${node.alpha * 0.4})`;
+                    ctx.strokeStyle = `rgba(240, 90, 40, ${node.alpha * 0.45})`;
                     ctx.lineWidth = 1;
                     ctx.stroke();
 
-                    // Dot at ends
+                    // Endpoint tech boxes
                     ctx.fillStyle = `rgba(240, 90, 40, ${node.alpha})`;
                     ctx.fillRect(node.startX - 1.5, node.startY - 1.5, 3, 3);
                     ctx.fillRect(node.endX - 1.5, node.endY - 1.5, 3, 3);
                 }
             });
 
-            // Update rising flame ember particle cluster
-            if (warmindEmbers.length < 40 && Math.random() < 0.35) {
+            // High volume glowing fire ember simulation
+            const embersTarget = 80 * multiplier;
+            if (warmindEmbers.length < embersTarget && Math.random() < (0.45 * multiplier)) {
                 warmindEmbers.push(spawnWarmindEmber());
             }
 
             for (let i = warmindEmbers.length - 1; i >= 0; i--) {
                 let ember = warmindEmbers[i];
-                ember.x += ember.x < 150 ? 0.1 : -0.1; // Slowly draft inward to form flame shape
+                ember.x += (150 - ember.x) * 0.012; // Draw inward slowly to keep flame cone centered
                 ember.x += ember.vx;
                 ember.y += ember.vy;
                 ember.alpha -= ember.decay;
 
+                // Render orange outer halo glow
                 ctx.beginPath();
-                ctx.arc(ember.x, ember.y, ember.size, 0, Math.PI * 2);
-                ctx.fillStyle = ember.color + ember.alpha + ')';
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = 'rgba(240, 90, 40, 0.7)';
+                ctx.arc(ember.x, ember.y, ember.size * 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = ember.haloColor + (ember.alpha * 0.3) + ')';
+                ctx.fill();
+
+                // Render hot yellow inner core glow
+                ctx.beginPath();
+                ctx.arc(ember.x, ember.y, ember.size * 0.7, 0, Math.PI * 2);
+                ctx.fillStyle = ember.coreColor + ember.alpha + ')';
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = 'rgba(255, 200, 50, 0.8)';
                 ctx.fill();
                 ctx.shadowBlur = 0; // Clear blur layer
 
-                if (ember.alpha <= 0 || ember.y < 30) {
+                if (ember.alpha <= 0 || ember.y < 20) {
                     warmindEmbers.splice(i, 1);
                 }
             }
         }
 
         /* --------------------------------------------------------
-           TRANSITION LOGIC: Screen raster bar glitches & state switch
+           TRANSITION LOGIC: Trigger final stage switch
            -------------------------------------------------------- */
         function triggerTransition() {
             isTransitionGlitching = true;
             transitionGlitchDuration = 0;
             
-            // Wipe coordinates clean to build fresh state
+            // Clean arrays completely to build fresh state
             sivaVines = [];
             warmindEmbers = [];
             warmindNodes = [];
+            techTextGlitches = [];
         }
 
         /* --------------------------------------------------------
-           CORE DRAW AND REFRESH ANIMATION LOOP
+           CORE ENGINE DRAW & DYNAMIC REFRESH LOOP
            -------------------------------------------------------- */
         let lastTimestamp = 0;
 
@@ -716,7 +762,6 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Accumulate system timer bounds
             if (!isTransitionGlitching) {
                 transitionTimer += dt;
                 if (transitionTimer >= transitionLimit) {
@@ -724,63 +769,88 @@
                 }
             }
 
-            // Determine if active frame needs visual render glitch offsets
-            let isGlitchingFrame = Math.random() < 0.07 || isTransitionGlitching;
+            // Evaluate if state is in the "Pre-Switch Infection Window"
+            const isInfectionPhase = (transitionTimer >= (transitionLimit - infectionWindow)) && !isTransitionGlitching;
+
+            // Frequency and magnitude of glitched displacement rises during infection phase
+            const glitchTriggerRate = isInfectionPhase ? 0.22 : 0.07;
+            const isGlitchingFrame = (Math.random() < glitchTriggerRate) || isTransitionGlitching;
 
             if (isGlitchingFrame) {
-                // Violent digital displacement
-                const skewX = (Math.random() - 0.5) * 20;
-                const moveX = (Math.random() - 0.5) * 24;
-                const moveY = (Math.random() - 0.5) * 12;
-                const scale = Math.random() * 0.35 + 0.90; // Grows/shrinks dramatically inside the glitch
+                // Heavier visual offset jumps
+                const offsetMultiplier = isInfectionPhase ? 1.6 : 1.0;
+                const skewX = (Math.random() - 0.5) * 25 * offsetMultiplier;
+                const moveX = (Math.random() - 0.5) * 30 * offsetMultiplier;
+                const moveY = (Math.random() - 0.5) * 16 * offsetMultiplier;
+                const scale = Math.random() * 0.40 + 0.85; // Extreme scaling steps during glitches
 
                 logo.style.transform = `translate(${moveX}px, ${moveY}px) skewX(${skewX}deg) scale(${scale})`;
 
-                // Multilayer split displacement drop-shadow filters
+                // Render unstable chromatically-shifted shadows on logo element
                 const glowColor = currentState === 'SIVA' ? 'rgba(255, 0, 60, 0.95)' : 'rgba(240, 90, 40, 0.95)';
                 logo.style.filter = `drop-shadow(${moveX}px 0 0 ${glowColor}) drop-shadow(${-moveX}px 0 0 rgba(0, 191, 255, 0.5))`;
 
-                // Draw digital line bars directly across the canvas space
-                ctx.fillStyle = currentState === 'SIVA' ? 'rgba(255, 0, 60, 0.25)' : 'rgba(240, 90, 40, 0.25)';
-                for (let j = 0; j < 4; j++) {
-                    ctx.fillRect(0, Math.random() * 300, 300, Math.random() * 12 + 2);
+                // Render dynamic digital horizontal split bands across the canvas area
+                ctx.fillStyle = currentState === 'SIVA' ? 'rgba(255, 0, 60, 0.3)' : 'rgba(240, 90, 40, 0.3)';
+                const linesCount = isInfectionPhase ? 6 : 4;
+                for (let j = 0; j < linesCount; j++) {
+                    ctx.fillRect(0, Math.random() * 300, 300, Math.random() * 16 + 2);
                 }
             } else {
-                // Standard organic scaling heartbeat
-                const breathingFactor = 1.0 + Math.sin(Date.now() / 650) * 0.05;
-                logo.style.transform = `scale(${breathingFactor})`;
+                // Heartbeat breathe scale
+                const breatheFactor = 1.0 + Math.sin(Date.now() / 550) * 0.055;
+                logo.style.transform = `scale(${breatheFactor})`;
 
-                // Static accent glow depending on current system state
                 if (currentState === 'SIVA') {
-                    logo.style.filter = `drop-shadow(0 0 12px rgba(255, 0, 60, 0.8))`;
+                    logo.style.filter = `drop-shadow(0 0 14px rgba(255, 0, 60, 0.8))`;
                 } else {
-                    logo.style.filter = `drop-shadow(0 0 12px rgba(240, 90, 40, 0.8))`;
+                    logo.style.filter = `drop-shadow(0 0 14px rgba(240, 90, 40, 0.8))`;
                 }
             }
 
-            // Render matching background graphic layers
-            if (currentState === 'SIVA') {
-                drawSivaLayer();
+            // Draw visual states based on phase
+            if (isInfectionPhase) {
+                // INFECTION STATE: Clashing SIVA vs Warmind particles rendered together
+                // Invader spawns heavily, defender scales back slightly to show progression of infection
+                if (currentState === 'SIVA') {
+                    // SIVA is active, but Warmind is aggressively invading and growing
+                    drawSivaLayer(0.7);
+                    drawWarmindLayer(1.5);
+                } else {
+                    // Warmind is active, but SIVA vines are spreading and taking over
+                    drawWarmindLayer(0.7);
+                    drawSivaLayer(1.5);
+                }
+
+                // Rapid styling flicker triggers during infection takeover
+                if (Math.random() < 0.3) {
+                    updateGlobalStyle(Math.random() > 0.5 ? 'SIVA' : 'WARMIND');
+                }
             } else {
-                drawWarmindLayer();
+                // NORMAL STATE: Render standard background graphic layer
+                if (currentState === 'SIVA') {
+                    drawSivaLayer();
+                } else {
+                    drawWarmindLayer();
+                }
             }
 
-            // Handle switch transition cycle
+            // Handling the total system transition freeze/glitch
             if (isTransitionGlitching) {
                 transitionGlitchDuration += dt;
 
-                // Alternate colors rapidly during takeover
-                if (Math.random() < 0.4) {
+                // Alternate CSS styles rapidly to complete takeover
+                if (Math.random() < 0.5) {
                     updateGlobalStyle(Math.random() > 0.5 ? 'SIVA' : 'WARMIND');
                 }
 
-                if (transitionGlitchDuration >= 600) { // Glitch duration: 0.6 seconds
+                if (transitionGlitchDuration >= 700) { // Lock screen for 0.7s during glitch
                     isTransitionGlitching = false;
                     currentState = (currentState === 'SIVA') ? 'WARMIND' : 'SIVA';
                     transitionTimer = 0;
-                    transitionLimit = Math.random() * 6000 + 6000; // Reset next swap timeframe
+                    transitionLimit = Math.random() * 6000 + 7000; // Recalculate next cycle limits
 
-                    // Solidify state colors
+                    // Solidify updated state styling
                     updateGlobalStyle(currentState);
                 }
             }
@@ -788,7 +858,7 @@
             requestAnimationFrame(mainLoop);
         }
 
-        // Initialize engine and start the graphics loop
+        // Boot and execute graphics layer
         window.addEventListener('load', () => {
             initEngine();
             requestAnimationFrame(mainLoop);
