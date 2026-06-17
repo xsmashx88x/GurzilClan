@@ -13,6 +13,7 @@
             --bg-primary: #0a0a0c;
             --bg-secondary: #121216;
             --bg-accent: #1e1e24;
+            /* These CSS variables are modified dynamically by JS to transition between Red (SIVA) and Orange (Warmind) */
             --siva-red: #ff003c;
             --siva-glow: rgba(255, 0, 60, 0.6);
             --text-main: #e2e2e5;
@@ -48,6 +49,7 @@
         ::-webkit-scrollbar-thumb {
             background: var(--siva-red);
             border-radius: 3px;
+            transition: background 0.5s ease;
         }
 
         /* Layout Container */
@@ -58,7 +60,7 @@
             position: relative;
         }
 
-        /* Decorative SIVA/Warmind Border Lines */
+        /* Decorative Border Lines */
         .grid-line {
             position: absolute;
             background: linear-gradient(90deg, transparent, var(--siva-red), transparent);
@@ -66,6 +68,7 @@
             width: 100%;
             left: 0;
             opacity: 0.3;
+            transition: background 0.5s ease;
         }
         .grid-line-top { top: 10px; }
         .grid-line-bottom { bottom: 10px; }
@@ -77,103 +80,36 @@
             position: relative;
         }
 
-        /* Animated Custom Logo Container */
-        .siva-logo-container {
-            width: 180px; 
-            height: 180px; 
-            margin: 0 auto 30px; /* Added spacing to prevent overlap when scaling up */
+        /* Advanced Custom Logo & Canvas Container */
+        .logo-system-container {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 10px;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .siva-logo {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            animation: siva-warmind-hybrid 12s infinite ease-in-out;
+        /* Overlaid Canvas for SIVA Vines / Warmind Embers & Lines */
+        #glitch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        /* Hybrid SIVA / Warmind Glitch and Scale Loop */
-        @keyframes siva-warmind-hybrid {
-            /* =======================================================
-               SIVA PHASE (0% to 40%) - Organic rapid pulse, Red glows
-               ======================================================= */
-            0% {
-                transform: scale(0.95) rotate(0deg) skewX(0deg);
-                filter: drop-shadow(0 0 10px rgba(255, 0, 60, 0.7)) brightness(1);
-            }
-            15% {
-                transform: scale(1.15) rotate(-1deg) skewX(0deg);
-                filter: drop-shadow(0 0 25px rgba(255, 0, 60, 0.9)) brightness(1.25);
-            }
-            17% {
-                /* Sudden SIVA replication glitch spike */
-                transform: scale(1.22) translate(-5px, 2px) skewX(-12deg);
-                filter: drop-shadow(-6px 0 12px rgba(255, 0, 60, 0.9)) drop-shadow(6px 0 12px rgba(0, 191, 255, 0.4));
-            }
-            19% {
-                transform: scale(1.02) translate(0, 0) skewX(0deg);
-                filter: drop-shadow(0 0 15px rgba(255, 0, 60, 0.7));
-            }
-            35% {
-                transform: scale(0.88) rotate(1deg) skewX(0deg);
-                filter: drop-shadow(0 0 8px rgba(255, 0, 60, 0.5));
-            }
-
-            /* =======================================================
-               NETWORK HIJACK TRANSITION (40% to 50%) - Strobe instability
-               ======================================================= */
-            43% {
-                transform: scale(1.25) translate(4px, -3px) rotate(-3deg) skewY(3deg);
-                filter: drop-shadow(-8px 0 15px rgba(240, 90, 40, 0.9)) drop-shadow(8px 0 15px rgba(255, 0, 60, 0.9)) brightness(1.6);
-            }
-            46% {
-                transform: scale(0.85) translate(-2px, 2px) rotate(0deg);
-                filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
-            }
-
-            /* =======================================================
-               WARMIND PHASE (50% to 90%) - Structured expansion, Amber glows
-               ======================================================= */
-            50% {
-                transform: scale(0.96) rotate(0deg) skewX(0deg);
-                filter: drop-shadow(0 0 12px rgba(240, 90, 40, 0.7)) brightness(1);
-            }
-            65% {
-                transform: scale(1.18) scaleX(1.03) rotate(0deg);
-                filter: drop-shadow(0 0 28px rgba(240, 90, 40, 0.9)) brightness(1.3);
-            }
-            68% {
-                /* Structured digital interference grid glitch */
-                transform: scale(1.08) translate(3px, -1px) skewY(3deg);
-                filter: drop-shadow(0 0 18px rgba(240, 90, 40, 0.85)) contrast(1.4);
-            }
-            70% {
-                transform: scale(0.90) rotate(-1deg) skewY(0deg);
-                filter: drop-shadow(0 0 10px rgba(240, 90, 40, 0.55));
-            }
-            85% {
-                transform: scale(1.14) rotate(1deg);
-                filter: drop-shadow(0 0 20px rgba(240, 90, 40, 0.8));
-            }
-
-            /* =======================================================
-               RE-INFECTION TRANSITION (90% to 100%) - Corruption returns
-               ======================================================= */
-            92% {
-                transform: scale(1.23) translate(-4px, 3px) skewX(10deg);
-                filter: drop-shadow(6px 0 15px rgba(255, 0, 60, 0.9)) drop-shadow(-6px 0 15px rgba(240, 90, 40, 0.8)) brightness(1.5);
-            }
-            96% {
-                transform: scale(0.86) rotate(0deg) skewX(0deg);
-                filter: drop-shadow(0 0 6px rgba(255, 0, 60, 0.45));
-            }
-            100% {
-                transform: scale(0.95) rotate(0deg) skewX(0deg);
-                filter: drop-shadow(0 0 10px rgba(255, 0, 60, 0.7)) brightness(1);
-            }
+        .siva-logo {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            z-index: 2;
+            position: relative;
+            transform-origin: center center;
+            user-select: none;
         }
 
         .clan-title {
@@ -185,6 +121,7 @@
             text-transform: uppercase;
             margin-bottom: 10px;
             text-shadow: 0 0 12px var(--siva-glow);
+            transition: text-shadow 0.5s ease;
         }
 
         .clan-subtitle {
@@ -193,6 +130,7 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 25px;
+            transition: color 0.5s ease;
         }
 
         /* Cybernetic Buttons */
@@ -214,39 +152,25 @@
             padding: 12px 28px;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
             cursor: pointer;
             border: none;
             clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+            transition: color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, transform 0.2s ease;
         }
 
-        /* Discord Button styled exactly like the Bungie style */
-        .btn-discord {
+        /* Discord & Clan Page Buttons (Standard Unified Style) */
+        .btn-discord, .btn-clan {
             background-color: transparent;
             color: var(--text-main);
             border: 2px solid var(--siva-red);
             box-shadow: 0 0 10px var(--siva-glow);
         }
 
-        .btn-discord:hover {
+        .btn-discord:hover, .btn-clan:hover {
             background-color: var(--siva-red);
             color: #000;
             transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(255, 0, 60, 0.8);
-        }
-
-        .btn-clan {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 2px solid var(--siva-red);
-            box-shadow: 0 0 10px var(--siva-glow);
-        }
-
-        .btn-clan:hover {
-            background-color: var(--siva-red);
-            color: #000;
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(255, 0, 60, 0.8);
+            box-shadow: 0 0 20px var(--siva-glow);
         }
 
         /* Clan Intro Card */
@@ -260,6 +184,7 @@
             margin-bottom: 40px;
             position: relative;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: border-left-color 0.5s ease, border-top-color 0.5s ease, border-right-color 0.5s ease, border-bottom-color 0.5s ease;
         }
 
         .intro-card::before {
@@ -272,6 +197,7 @@
             font-size: 0.75rem;
             color: var(--siva-red);
             letter-spacing: 1px;
+            transition: color 0.5s ease;
         }
 
         .intro-card h2 {
@@ -300,7 +226,7 @@
             background-color: var(--bg-secondary);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-left: 3px solid var(--text-muted);
-            transition: all 0.3s ease;
+            transition: border-left-color 0.5s ease, box-shadow 0.5s ease;
         }
 
         .accordion-item.active {
@@ -338,7 +264,7 @@
             height: 8px;
             background-color: var(--text-muted);
             transform: rotate(45deg);
-            transition: all 0.3s ease;
+            transition: background-color 0.5s ease, box-shadow 0.5s ease, transform 0.3s ease;
         }
 
         .accordion-item.active .node-bullet {
@@ -350,7 +276,7 @@
         .accordion-icon {
             font-size: 1.2rem;
             color: var(--text-muted);
-            transition: transform 0.3s ease, color 0.3s ease;
+            transition: transform 0.3s ease, color 0.5s ease;
         }
 
         .accordion-item.active .accordion-icon {
@@ -391,6 +317,7 @@
             position: absolute;
             left: 0;
             top: 2.5px;
+            transition: color 0.5s ease;
         }
 
         /* Footer Info */
@@ -425,8 +352,10 @@
         
         <!-- Header & Logo Section -->
         <header>
-            <div class="siva-logo-container">
-                <!-- Custom PNG Logo with Advanced SIVA/Warmind Hybrid Animation -->
+            <div class="logo-system-container">
+                <!-- Glitch Draw Canvas layer -->
+                <canvas id="glitch-canvas"></canvas>
+                <!-- Custom PNG Logo -->
                 <img class="siva-logo" src="https://raw.githubusercontent.com/xsmashx88x/GurzilClan/main/gurzilicon.png" alt="Gurzil Clan Icon">
             </div>
             <h1 class="clan-title">GURZIL</h1>
@@ -527,17 +456,17 @@
 
     <div class="grid-line grid-line-bottom"></div>
 
-    <!-- JS for Accordion Control -->
+    <!-- JS for Accordion Control & Canvas Glitch/Visuals Engine -->
     <script>
+        /* ========================================================
+           1. ACCORDION PROTOCOLS
+           ======================================================== */
         document.querySelectorAll('.accordion-header').forEach(header => {
             header.addEventListener('click', () => {
                 const item = header.parentElement;
                 const content = item.querySelector('.accordion-content');
-                
-                // Toggle active state
                 const isActive = item.classList.contains('active');
                 
-                // Close all other accordion items (keeps it neat)
                 document.querySelectorAll('.accordion-item').forEach(otherItem => {
                     otherItem.classList.remove('active');
                     otherItem.querySelector('.accordion-content').style.maxHeight = null;
@@ -554,6 +483,315 @@
                     item.querySelector('.accordion-icon').textContent = '+';
                 }
             });
+        });
+
+        /* ========================================================
+           2. SIVA vs WARMIND ADVANCED ENGINE
+           ======================================================== */
+        const canvas = document.getElementById('glitch-canvas');
+        const ctx = canvas.getContext('2d');
+        const logo = document.querySelector('.siva-logo');
+
+        // Dynamic State Variables
+        let currentState = Math.random() > 0.5 ? 'SIVA' : 'WARMIND';
+        let transitionTimer = 0;
+        let transitionLimit = Math.random() * 5000 + 5000; // Switch state every 5-10s
+        let isTransitionGlitching = false;
+        let transitionGlitchDuration = 0;
+
+        // Visual Data Repositories
+        let sivaVines = [];
+        let warmindEmbers = [];
+        let warmindNodes = [];
+        let gridDots = [];
+
+        // Initialize Screen Elements
+        function initEngine() {
+            canvas.width = 300;
+            canvas.height = 300;
+
+            // Generate coordinate points for Warmind visual overlays
+            for (let i = 0; i < 20; i++) {
+                gridDots.push({
+                    x: Math.random() * 300,
+                    y: Math.random() * 300,
+                    size: Math.random() * 1.5 + 1,
+                    alpha: Math.random() * 0.4 + 0.1
+                });
+            }
+
+            // Sync original accent CSS states depending on loaded theme
+            updateGlobalStyle(currentState);
+        }
+
+        // Swapping UI styling values dynamically
+        function updateGlobalStyle(state) {
+            if (state === 'SIVA') {
+                document.documentElement.style.setProperty('--siva-red', '#ff003c');
+                document.documentElement.style.setProperty('--siva-glow', 'rgba(255, 0, 60, 0.6)');
+            } else {
+                document.documentElement.style.setProperty('--siva-red', '#f05a28');
+                document.documentElement.style.setProperty('--siva-glow', 'rgba(240, 90, 40, 0.6)');
+            }
+        }
+
+        /* --------------------------------------------------------
+           SIVA STATE: Winding organic lines (Vines) with node segments
+           -------------------------------------------------------- */
+        function spawnSivaVine() {
+            const angle = Math.random() * Math.PI * 2;
+            const dist = Math.random() * 20 + 20; // Spawn near logo edge
+            return {
+                points: [{
+                    x: 150 + Math.cos(angle) * dist,
+                    y: 150 + Math.sin(angle) * dist
+                }],
+                vx: Math.cos(angle) * (Math.random() * 1.2 + 0.6),
+                vy: Math.sin(angle) * (Math.random() * 1.2 + 0.6),
+                maxLength: Math.random() * 60 + 30,
+                width: Math.random() * 1.2 + 0.6,
+                color: `rgba(255, 0, 60, ${Math.random() * 0.6 + 0.4})`,
+                life: 0
+            };
+        }
+
+        function drawSivaLayer() {
+            // Spawn new organic nanite strands randomly
+            if (sivaVines.length < 12 && Math.random() < 0.15) {
+                sivaVines.push(spawnSivaVine());
+            }
+
+            for (let index = sivaVines.length - 1; index >= 0; index--) {
+                let vine = sivaVines[index];
+                vine.life++;
+
+                // Inject wavy organic curve variance (Math.sin/cos variation)
+                vine.vx += (Math.random() - 0.5) * 0.3 + Math.sin(vine.life * 0.1) * 0.08;
+                vine.vy += (Math.random() - 0.5) * 0.3 + Math.cos(vine.life * 0.1) * 0.08;
+
+                // Restrict velocity boundaries to keep paths clean
+                const speed = Math.sqrt(vine.vx * vine.vx + vine.vy * vine.vy);
+                if (speed > 2) {
+                    vine.vx = (vine.vx / speed) * 1.8;
+                    vine.vy = (vine.vy / speed) * 1.8;
+                }
+
+                let lastPt = vine.points[vine.points.length - 1];
+                let newX = lastPt.x + vine.vx;
+                let newY = lastPt.y + vine.vy;
+
+                vine.points.push({ x: newX, y: newY });
+
+                // Render vine connections
+                ctx.beginPath();
+                ctx.moveTo(vine.points[0].x, vine.points[0].y);
+                for (let i = 1; i < vine.points.length; i++) {
+                    ctx.lineTo(vine.points[i].x, vine.points[i].y);
+                }
+                ctx.strokeStyle = vine.color;
+                ctx.lineWidth = vine.width;
+                ctx.stroke();
+
+                // Draw structured diamond node seeds along active vine paths
+                if (vine.points.length % 12 === 0) {
+                    ctx.save();
+                    ctx.translate(newX, newY);
+                    ctx.rotate(Math.PI / 4);
+                    ctx.fillStyle = '#ff003c';
+                    ctx.shadowBlur = 6;
+                    ctx.shadowColor = '#ff003c';
+                    ctx.fillRect(-2.5, -2.5, 5, 5);
+                    ctx.restore();
+                }
+
+                // Delete dead segments to prevent DOM leak
+                if (vine.points.length > vine.maxLength || newX < 0 || newX > 300 || newY < 0 || newY > 300) {
+                    sivaVines.splice(index, 1);
+                }
+            }
+        }
+
+        /* --------------------------------------------------------
+           WARMIND STATE: Rising Fire/Ember vectors and grid dots
+           -------------------------------------------------------- */
+        function spawnWarmindEmber() {
+            return {
+                x: Math.random() * 120 + 90, // Position directly underneath the logo core
+                y: Math.random() * 40 + 180, 
+                vx: (Math.random() - 0.5) * 0.7,
+                vy: -Math.random() * 1.6 - 0.4, // Floating upwards
+                size: Math.random() * 2.5 + 1,
+                alpha: 1,
+                decay: Math.random() * 0.012 + 0.006,
+                color: 'rgba(240, 90, 40, '
+            };
+        }
+
+        function drawWarmindLayer() {
+            // Blit coordinate structural grid dots
+            gridDots.forEach(dot => {
+                ctx.fillStyle = `rgba(240, 90, 40, ${dot.alpha * (Math.sin(Date.now() / 400) * 0.4 + 0.6)})`;
+                ctx.fillRect(dot.x, dot.y, dot.size, dot.size);
+            });
+
+            // Occasional vector-dot connection lines
+            if (Math.random() < 0.04) {
+                const startX = Math.random() * 240 + 30;
+                const startY = Math.random() * 240 + 30;
+                warmindNodes.push({
+                    startX: startX,
+                    startY: startY,
+                    endX: startX + (Math.random() > 0.5 ? 40 : -40),
+                    endY: startY + 40,
+                    alpha: 1
+                });
+            }
+
+            warmindNodes.forEach((node, index) => {
+                node.alpha -= 0.02;
+                if (node.alpha <= 0) {
+                    warmindNodes.splice(index, 1);
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(node.startX, node.startY);
+                    ctx.lineTo(node.endX, node.endY);
+                    ctx.strokeStyle = `rgba(240, 90, 40, ${node.alpha * 0.4})`;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+
+                    // Dot at ends
+                    ctx.fillStyle = `rgba(240, 90, 40, ${node.alpha})`;
+                    ctx.fillRect(node.startX - 1.5, node.startY - 1.5, 3, 3);
+                    ctx.fillRect(node.endX - 1.5, node.endY - 1.5, 3, 3);
+                }
+            });
+
+            // Update rising flame ember particle cluster
+            if (warmindEmbers.length < 40 && Math.random() < 0.35) {
+                warmindEmbers.push(spawnWarmindEmber());
+            }
+
+            for (let i = warmindEmbers.length - 1; i >= 0; i--) {
+                let ember = warmindEmbers[i];
+                ember.x += ember.x < 150 ? 0.1 : -0.1; // Slowly draft inward to form flame shape
+                ember.x += ember.vx;
+                ember.y += ember.vy;
+                ember.alpha -= ember.decay;
+
+                ctx.beginPath();
+                ctx.arc(ember.x, ember.y, ember.size, 0, Math.PI * 2);
+                ctx.fillStyle = ember.color + ember.alpha + ')';
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = 'rgba(240, 90, 40, 0.7)';
+                ctx.fill();
+                ctx.shadowBlur = 0; // Clear blur layer
+
+                if (ember.alpha <= 0 || ember.y < 30) {
+                    warmindEmbers.splice(i, 1);
+                }
+            }
+        }
+
+        /* --------------------------------------------------------
+           TRANSITION LOGIC: Screen raster bar glitches & state switch
+           -------------------------------------------------------- */
+        function triggerTransition() {
+            isTransitionGlitching = true;
+            transitionGlitchDuration = 0;
+            
+            // Wipe coordinates clean to build fresh state
+            sivaVines = [];
+            warmindEmbers = [];
+            warmindNodes = [];
+        }
+
+        /* --------------------------------------------------------
+           CORE DRAW AND REFRESH ANIMATION LOOP
+           -------------------------------------------------------- */
+        let lastTimestamp = 0;
+
+        function mainLoop(timestamp) {
+            const dt = timestamp - lastTimestamp;
+            lastTimestamp = timestamp;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Accumulate system timer bounds
+            if (!isTransitionGlitching) {
+                transitionTimer += dt;
+                if (transitionTimer >= transitionLimit) {
+                    triggerTransition();
+                }
+            }
+
+            // Determine if active frame needs visual render glitch offsets
+            let isGlitchingFrame = Math.random() < 0.07 || isTransitionGlitching;
+
+            if (isGlitchingFrame) {
+                // Violent digital displacement
+                const skewX = (Math.random() - 0.5) * 20;
+                const moveX = (Math.random() - 0.5) * 24;
+                const moveY = (Math.random() - 0.5) * 12;
+                const scale = Math.random() * 0.35 + 0.90; // Grows/shrinks dramatically inside the glitch
+
+                logo.style.transform = `translate(${moveX}px, ${moveY}px) skewX(${skewX}deg) scale(${scale})`;
+
+                // Multilayer split displacement drop-shadow filters
+                const glowColor = currentState === 'SIVA' ? 'rgba(255, 0, 60, 0.95)' : 'rgba(240, 90, 40, 0.95)';
+                logo.style.filter = `drop-shadow(${moveX}px 0 0 ${glowColor}) drop-shadow(${-moveX}px 0 0 rgba(0, 191, 255, 0.5))`;
+
+                // Draw digital line bars directly across the canvas space
+                ctx.fillStyle = currentState === 'SIVA' ? 'rgba(255, 0, 60, 0.25)' : 'rgba(240, 90, 40, 0.25)';
+                for (let j = 0; j < 4; j++) {
+                    ctx.fillRect(0, Math.random() * 300, 300, Math.random() * 12 + 2);
+                }
+            } else {
+                // Standard organic scaling heartbeat
+                const breathingFactor = 1.0 + Math.sin(Date.now() / 650) * 0.05;
+                logo.style.transform = `scale(${breathingFactor})`;
+
+                // Static accent glow depending on current system state
+                if (currentState === 'SIVA') {
+                    logo.style.filter = `drop-shadow(0 0 12px rgba(255, 0, 60, 0.8))`;
+                } else {
+                    logo.style.filter = `drop-shadow(0 0 12px rgba(240, 90, 40, 0.8))`;
+                }
+            }
+
+            // Render matching background graphic layers
+            if (currentState === 'SIVA') {
+                drawSivaLayer();
+            } else {
+                drawWarmindLayer();
+            }
+
+            // Handle switch transition cycle
+            if (isTransitionGlitching) {
+                transitionGlitchDuration += dt;
+
+                // Alternate colors rapidly during takeover
+                if (Math.random() < 0.4) {
+                    updateGlobalStyle(Math.random() > 0.5 ? 'SIVA' : 'WARMIND');
+                }
+
+                if (transitionGlitchDuration >= 600) { // Glitch duration: 0.6 seconds
+                    isTransitionGlitching = false;
+                    currentState = (currentState === 'SIVA') ? 'WARMIND' : 'SIVA';
+                    transitionTimer = 0;
+                    transitionLimit = Math.random() * 6000 + 6000; // Reset next swap timeframe
+
+                    // Solidify state colors
+                    updateGlobalStyle(currentState);
+                }
+            }
+
+            requestAnimationFrame(mainLoop);
+        }
+
+        // Initialize engine and start the graphics loop
+        window.addEventListener('load', () => {
+            initEngine();
+            requestAnimationFrame(mainLoop);
         });
     </script>
 </body>
