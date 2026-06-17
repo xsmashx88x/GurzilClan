@@ -485,7 +485,7 @@
         });
 
         /* ========================================================
-           2. SIVA vs WARMIND ADVANCED ENGINE (DYNAMIC IMAGES EDITION)
+           2. SIVA vs WARMIND ADVANCED ENGINE (DYNAMIC CIRCUITS EDITION)
            ======================================================== */
         const canvas = document.getElementById('glitch-canvas');
         const ctx = canvas.getContext('2d');
@@ -515,6 +515,9 @@
         let warmindNodes = [];
         let gridDots = [];
         let techTextGlitches = [];
+        let warmindTraces = []; // Upgraded Circuit system
+        let scanlineY = 0;
+        let scanlineDir = 1;
 
         // Initialize Canvas Engine
         function initEngine() {
@@ -638,30 +641,116 @@
         }
 
         /* --------------------------------------------------------
-           WARMIND LAYERS: Flaring orange embers & blinking hex codes
+           WARMIND LAYERS: Creeping Hard-Light Circuit Board Traces
            -------------------------------------------------------- */
-        function spawnWarmindEmber() {
+        function spawnWarmindTrace() {
+            // Strict geometric angles (multiples of 45 degrees)
+            const angles = [0, Math.PI/4, Math.PI/2, Math.PI*3/4, Math.PI, Math.PI*5/4, Math.PI*3/2, Math.PI*7/4];
+            const angleIndex = Math.floor(Math.random() * angles.length);
+            const angle = angles[angleIndex];
+            const dist = Math.random() * 15 + 50; 
             return {
-                x: Math.random() * 150 + 75, // Matches the wider bounds of the larger logo
-                y: Math.random() * 30 + 175, 
-                vx: (Math.random() - 0.5) * 0.8,
-                vy: -Math.random() * 2.2 - 0.6, // Rapid upward flame motion
-                size: Math.random() * 3 + 1,
-                alpha: 1.0,
-                decay: Math.random() * 0.015 + 0.007,
-                coreColor: 'rgba(255, 200, 50, ', // Hot inner core
-                haloColor: 'rgba(240, 90, 40, '   // Outer flame envelope
+                points: [{
+                    x: 150 + Math.cos(angle) * dist,
+                    y: 150 + Math.sin(angle) * dist
+                }],
+                angleIndex: angleIndex,
+                speed: Math.random() * 1.5 + 1.2,
+                maxLength: Math.random() * 60 + 35,
+                width: Math.random() * 1.4 + 0.8,
+                color: `rgba(240, 90, 40, ${Math.random() * 0.7 + 0.3})`,
+                life: 0
             };
         }
 
         function drawWarmindLayer(multiplier = 1) {
-            // Draw background structural dot coordinate patterns
+            // RENDER SYSTEM SCAANER: Moving horizontal laser sweep
+            scanlineY += scanlineDir * 1.25;
+            if (scanlineY > 300 || scanlineY < 0) scanlineDir *= -1;
+            ctx.strokeStyle = 'rgba(240, 90, 40, 0.25)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, scanlineY);
+            ctx.lineTo(300, scanlineY);
+            ctx.stroke();
+
+            // Coordinates tagged along the scanner
+            if (Math.random() < 0.12) {
+                ctx.fillStyle = 'rgba(240, 90, 40, 0.45)';
+                ctx.font = '6px Share Tech Mono';
+                ctx.fillText(`SCAN_Y: ${Math.round(scanlineY)}`, 10, scanlineY - 4);
+            }
+
+            // Draw coordinate dots background
             gridDots.forEach(dot => {
                 ctx.fillStyle = `rgba(240, 90, 40, ${dot.alpha * (Math.sin(Date.now() / 300) * 0.4 + 0.6)})`;
                 ctx.fillRect(dot.x, dot.y, dot.size, dot.size);
             });
 
-            // Flash tech code strings around the canvas grid
+            // Draw Computing Data fragments
+            if (Math.random() < (0.15 * multiplier)) {
+                ctx.fillStyle = 'rgba(240, 90, 40, 0.5)';
+                const nSize = Math.random() * 6 + 2;
+                ctx.fillRect(
+                    150 + (Math.random() - 0.5) * 160 - nSize/2,
+                    150 + (Math.random() - 0.5) * 160 - nSize/2,
+                    nSize,
+                    nSize
+                );
+            }
+
+            // 1. HARD-LIGHT CIRCUITS (Mirroring SIVA vines but math-rigid)
+            const tracesTarget = 24 * multiplier;
+            if (warmindTraces.length < tracesTarget && Math.random() < (0.22 * multiplier)) {
+                warmindTraces.push(spawnWarmindTrace());
+            }
+
+            for (let index = warmindTraces.length - 1; index >= 0; index--) {
+                let trace = warmindTraces[index];
+                trace.life++;
+
+                let lastPt = trace.points[trace.points.length - 1];
+                const angles = [0, Math.PI/4, Math.PI/2, Math.PI*3/4, Math.PI, Math.PI*5/4, Math.PI*3/2, Math.PI*7/4];
+
+                // Sharp mathematical turns at regular interval coordinates
+                if (trace.life % 14 === 0 && Math.random() < 0.45) {
+                    const turnDir = Math.random() > 0.5 ? 1 : -1;
+                    const turnSteps = Math.random() > 0.5 ? 1 : 2; // 45 deg or 90 deg steps
+                    trace.angleIndex = (trace.angleIndex + turnDir * turnSteps + 8) % 8;
+                }
+
+                const currentAngle = angles[trace.angleIndex];
+                const newX = lastPt.x + Math.cos(currentAngle) * trace.speed;
+                const newY = lastPt.y + Math.sin(currentAngle) * trace.speed;
+
+                trace.points.push({ x: newX, y: newY });
+
+                // Render vector trace line
+                ctx.beginPath();
+                ctx.moveTo(trace.points[0].x, trace.points[0].y);
+                for (let i = 1; i < trace.points.length; i++) {
+                    ctx.lineTo(trace.points[i].x, trace.points[i].y);
+                }
+                ctx.strokeStyle = trace.color;
+                ctx.lineWidth = trace.width;
+                ctx.stroke();
+
+                // Render processor-style square nodes at intersection joints
+                if (trace.life % 14 === 0) {
+                    ctx.fillStyle = '#f05a28';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#f05a28';
+                    ctx.fillRect(newX - 2.5, newY - 2.5, 5, 5);
+                    ctx.shadowBlur = 0;
+                }
+
+                // Delete long segments to free performance
+                if (trace.points.length > trace.maxLength || newX < 0 || newX > 300 || newY < 0 || newY > 300) {
+                    warmindTraces.splice(index, 1);
+                }
+            }
+
+            // 2. FLASH TEXT CODING SYSTEMS
             if (Math.random() < (0.08 * multiplier)) {
                 const hexArr = ['0x2A4C', 'SYS_ERR', 'RSPTN_OK', 'SEC_HIJACK', 'DIR_0x9A', 'NNT_INTRU', 'FLARE_ACT'];
                 techTextGlitches.push({
@@ -683,39 +772,7 @@
                 }
             });
 
-            // Random grid alignment vector nodes
-            if (Math.random() < (0.08 * multiplier)) {
-                const startX = Math.random() * 220 + 40;
-                const startY = Math.random() * 220 + 40;
-                warmindNodes.push({
-                    startX: startX,
-                    startY: startY,
-                    endX: startX + (Math.random() > 0.5 ? 50 : -50),
-                    endY: startY + (Math.random() > 0.5 ? 50 : -50),
-                    alpha: 1.0
-                });
-            }
-
-            warmindNodes.forEach((node, index) => {
-                node.alpha -= 0.025;
-                if (node.alpha <= 0) {
-                    warmindNodes.splice(index, 1);
-                } else {
-                    ctx.beginPath();
-                    ctx.moveTo(node.startX, node.startY);
-                    ctx.lineTo(node.endX, node.endY);
-                    ctx.strokeStyle = `rgba(240, 90, 40, ${node.alpha * 0.45})`;
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-
-                    // Endpoint tech boxes
-                    ctx.fillStyle = `rgba(240, 90, 40, ${node.alpha})`;
-                    ctx.fillRect(node.startX - 1.5, node.startY - 1.5, 3, 3);
-                    ctx.fillRect(node.endX - 1.5, node.endY - 1.5, 3, 3);
-                }
-            });
-
-            // High volume glowing fire ember simulation
+            // 3. FLAME STORM FLARING EMBERS
             const embersTarget = 80 * multiplier;
             if (warmindEmbers.length < embersTarget && Math.random() < (0.45 * multiplier)) {
                 warmindEmbers.push(spawnWarmindEmber());
@@ -761,6 +818,7 @@
             warmindEmbers = [];
             warmindNodes = [];
             techTextGlitches = [];
+            warmindTraces = [];
         }
 
         /* --------------------------------------------------------
